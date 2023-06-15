@@ -6,6 +6,7 @@ Tool Command Language (Tcl) is a scripting language commonly used in various dom
 links for easy navigation:
 1. [DAY-1](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-1)
 2. [DAY-2](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-2)
+3. [DAY-3](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-3) 
 
 
 ## DAY-1
@@ -54,8 +55,32 @@ echo " a tcl command created by VISRUAT T R (its pronounced as Vishruth)        
 ```
 tclsh pandabro.tcl $argv[1] 
 ```
-__Note : Make sure the file is executable by using this command ``` chmod -R 777 panda ``` __
+Note : Make sure the file is executable by using the command ``` chmod -R 777 panda ``` 
 
 ## DAY-2
+__Converting inputs to format[1] and feeding it to yosys for synthesis__
+
+  __- Create Variables__
+
+![Screenshot from 2023-06-15 15-11-10](https://github.com/Visruat/VSD-TCL/assets/125136551/1a039045-a2f5-4bc9-84c5-14f170450bd8)
+
+  __- Checking if the directories exist or not ( done to prevent the script from breaking )__
+
+![Screenshot from 2023-06-15 15-29-57](https://github.com/Visruat/VSD-TCL/assets/125136551/17c7398b-593d-40f9-a267-35bc6e7afc9a)
+
+
+## DAY-3
+
+__Read Constraints.scv file and convert to sdc format__
+  
+ ![Screenshot from 2023-06-15 16-19-22](https://github.com/Visruat/VSD-TCL/assets/125136551/29f6585a-ae36-43a3-9a2b-8f47e39b744e)
+
+
+
+
+
+
+
+
 
 
