@@ -4,8 +4,8 @@
 Tool Command Language (Tcl) is a scripting language commonly used in various domains, including software development, system administration, and electronic design automation (EDA). Tcl is known for its simplicity, flexibility, and ease of integration with other programming languages and tools. Tcl scripting involves writing scripts in the Tcl language to automate tasks, execute commands, and manipulate data.
 
 links for easy navigation:
-1. [DAY-1](url)
-2. [DAY-2](url)
+1. [DAY-1](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-1)
+2. [DAY-2](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-2)
 
 
 ## DAY-1
