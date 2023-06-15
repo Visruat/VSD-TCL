@@ -54,6 +54,7 @@ echo " a tcl command created by VISRUAT T R (its pronounced as Vishruth)        
 ```
 tclsh pandabro.tcl $argv[1] 
 ```
+__Note : Make sure the file is executable by using this command ``` chmod -R 777 panda ``` __
 
 ## DAY-2
 
