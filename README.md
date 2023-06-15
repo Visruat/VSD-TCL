@@ -71,7 +71,7 @@ __Converting inputs to format[1] and feeding it to yosys for synthesis__
 
 ## DAY-3
 
-__Read Constraints.scv file and convert to sdc format__
+__Read Constraints.csv file and convert to sdc format__
   
  ![Screenshot from 2023-06-15 16-19-22](https://github.com/Visruat/VSD-TCL/assets/125136551/29f6585a-ae36-43a3-9a2b-8f47e39b744e)
 
