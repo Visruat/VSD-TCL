@@ -68,6 +68,10 @@ __Converting inputs to format[1] and feeding it to yosys for synthesis__
 
 ![Screenshot from 2023-06-15 15-29-57](https://github.com/Visruat/VSD-TCL/assets/125136551/17c7398b-593d-40f9-a267-35bc6e7afc9a)
 
+Displays an error when the required file is not in the needed directory
+
+![Screenshot from 2023-06-15 16-50-05](https://github.com/Visruat/VSD-TCL/assets/125136551/a82bf99c-b7bf-4288-b77a-5766d2ac8112)
+
 
 ## DAY-3
 
