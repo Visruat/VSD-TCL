@@ -7,6 +7,8 @@ links for easy navigation:
 1. [DAY-1](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-1)
 2. [DAY-2](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-2)
 3. [DAY-3](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-3) 
+4. [DAY-4](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-4) 
+5. [DAY-5](https://github.com/Visruat/VSD-TCL/blob/main/README.md#day-5) 
 
 
 ## DAY-1
@@ -90,6 +92,41 @@ The script writing the sdc constraints.
 A snip of the sdc file 
 
 ![Screenshot from 2023-06-18 14-16-25](https://github.com/Visruat/VSD-TCL/assets/125136551/d80f44f6-45ce-418a-b067-bebf900f1217)
+
+## DAY-4
+
+### YOSYS (Yosys Open SYnthesis Suite)
+
+YOSYS is an open-source RTL synthesis and formal verification framework for digital circuits. It takes RTL descriptions (e.g., Verilog) as input and performs synthesis to generate a gate-level netlist. YOSYS supports technology mapping, optimization, and formal verification. It has a scripting interface, integrates with other EDA tools, and is widely used in academia and industry for digital design tasks.
+
+__Creating scripts for synthesis and running it on yosys__
+
+  - creating script for Hierarchy check
+  - running hierarchy check
+
+  Case 1: When all the modules are present and called correctly 
+
+![Screenshot from 2023-06-18 16-51-32](https://github.com/Visruat/VSD-TCL/assets/125136551/f0220dd8-4868-4a44-8b11-fe8a37ae9ca8)
+
+  Case 2: referenced in module error due to calling incorrectly or module doesnt exist
+
+![Screenshot from 2023-06-18 16-53-40](https://github.com/Visruat/VSD-TCL/assets/125136551/2ea42db4-f89a-4bc6-b4fb-345ab93d1637)
+
+  - after the hierarchy check is passed . The main synthesis script is written.
+  - running synthesis if there are no error in hierarchy check.
+
+  Case 1: No error in hierarchy
+
+![Screenshot from 2023-06-18 17-10-49](https://github.com/Visruat/VSD-TCL/assets/125136551/916f0c46-9f45-4812-8ab6-a7f234ed71f5)
+
+  Case 2: error encountered in hierarchy
+
+![Screenshot from 2023-06-18 17-12-06](https://github.com/Visruat/VSD-TCL/assets/125136551/24095315-680a-4905-960c-6da157f034d3)
+
+
+## DAY-5
+
+
 
   
  
