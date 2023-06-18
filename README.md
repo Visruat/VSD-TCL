@@ -76,19 +76,22 @@ Displays an error when the required file is not in the needed directory
 ## DAY-3
 
 __Read Constraints.csv file and convert to sdc format__
-  
-  - noting down necessary coordinates to get details from csv
 
-![Screenshot from 2023-06-15 16-19-22](https://github.com/Visruat/VSD-TCL/assets/125136551/29f6585a-ae36-43a3-9a2b-8f47e39b744e)
- 
   - getting clock details from csv file and writing it the sdc file in the required format
+  - getting input details from csv file and writing it in the required format
+  - getting output details from csv file and writing it in the required format
+ 
+Note: need to identify bussed and non bussed inputs and outputs before entering in the required format.
+
+The script writing the sdc constraints.
+
+![Screenshot from 2023-06-18 14-19-37](https://github.com/Visruat/VSD-TCL/assets/125136551/8d0cb933-cbc5-4aae-93dd-bc5819c33a3a)
+
+A snip of the sdc file 
+
+![Screenshot from 2023-06-18 14-16-25](https://github.com/Visruat/VSD-TCL/assets/125136551/d80f44f6-45ce-418a-b067-bebf900f1217)
+
   
-![Screenshot from 2023-06-18 09-49-05](https://github.com/Visruat/VSD-TCL/assets/125136551/8f298272-8176-42fb-8c55-71cb8edd3a47)
-
-the following was written in the sdc file
-
-![Screenshot from 2023-06-18 09-51-45](https://github.com/Visruat/VSD-TCL/assets/125136551/26bd3d28-5586-4ab4-a270-21dc016b2cfc)
-
  
 
 
