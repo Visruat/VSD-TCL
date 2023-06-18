@@ -1,0 +1,10 @@
+[0;33mW0613 17:28:57.025950  2157 ot_shell.cpp:419] Undefined command keyword "Option"
+[m[0;33mW0613 17:28:57.026110  2157 ot_shell.cpp:419] Undefined command keyword "llength"
+[m[0;33mW0613 17:28:57.026118  2157 ot_shell.cpp:419] Undefined command keyword "lindex"
+[m[0;33mW0613 17:28:57.026124  2157 ot_shell.cpp:419] Undefined command keyword "old"
+[m[0;33mW0613 17:28:57.026129  2157 ot_shell.cpp:419] Undefined command keyword "new"
+[mI0613 17:28:57.026141  2157 ot_environment.h:140] Setting 4 thread(s)
+I0613 17:28:57.026154  2157 ot_environment.h:116] Setting /home/vsduser/vsdsynth/osu018_stdcells.lib
+I0613 17:28:57.026173  2157 ot_environment.h:122] Setting /home/vsduser/vsdsynth/osu018_stdcells.lib
+terminate called after throwing an instance of 'std::logic_error'
+  what():  basic_string::_M_construct null not valid
