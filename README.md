@@ -126,9 +126,17 @@ __Creating scripts for synthesis and running it on yosys__
 
 ## DAY-5
 
+__create script for OpenTimer and run STA analysis followed by generation of Quality of Results (QoR)__
 
-
+_An introduction to procs_
+  - To generate a script for OpenTimer I will be making use of procs. Procs are an external tcl file that perform an operation that is specified in it when sourced to the main tcl file. It works similar to how a function works in Python Programming. An example of a proc would be read_liberty <args> where options _like -lib, -late, -early and /or <filename>_ can be passed as an arguememt to the proc. Once the proc is sourced in the main tcl script the read_liberty command will be executed by referring to the proc and mapping the arguements to the external tcl script(proc script). At the end of the proc command, the main tcl script will be left with the output of the proc.
   
+Refer to the image for pictorial undertanding
+
+<img src = "https://github.com/Visruat/VSD-TCL/assets/125136551/a4d8166c-5026-4e26-b7de-499626926123" width ="350" height ="350">  <img src = "https://github.com/Visruat/VSD-TCL/assets/125136551/c33f56bb-99fe-42f5-ba1f-d21e86795f96" width ="600" height ="350">
+
+
+
  
 
 
