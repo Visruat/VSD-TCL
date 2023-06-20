@@ -270,4 +270,273 @@ close $tmp_file
 - --> duty_cycle is found by implemeting this logic into tcl script = [ Ton/Tperiod * 100 ] where Ton is taken {x y} after "-waveform"
 - dump the puts statement if $timing_file
 
-- creating 
+- creating clock_latency constraints
+```
+set find_keyword [lsearch -all -inline $lines "set_clock_latency*"]
+#puts $find_keyword
+set tmp2_file [open ./temp/5 "w"]
+set new_port_name ""
+foreach elem $find_keyword {
+        set port_name [lindex $elem [expr {[lsearch $elem "-clock"]+1}]]
+        #puts "b = $port_name"
+        #puts "c = $new_port_name"
+	    if {![string match $new_port_name $port_name]} {
+        	set new_port_name $port_name 
+        	set delays_list [lsearch -all -inline $find_keyword [join [list "*" " " $port_name " " "*"] ""]]
+            #puts "d = $delays_list"
+        	set delay_value ""
+        	foreach new_elem $delays_list {
+        		set port_index [lsearch $new_elem "-clock"]
+        		lappend delay_value [lindex $new_elem [expr {$port_index-1}]]
+			#puts "e= $delay_value"
+        	}
+		puts -nonewline $tmp2_file "\nat $port_name $delay_value"
+	}
+}
+
+close $tmp2_file
+set tmp2_file [open ./temp/5 ]
+puts -nonewline $timing_file [read $tmp2_file]
+close $tmp2_file
+```
+- similar to finding create_clock constraints , clock_latency constraints are found by grepping for "set_clock_latency"
+- then we continue to separate each clock based of the name of the clock. delays_list will contain all the lines with same clock name due to the wildcards search that was performed using ``` [lsearch -all -inline $find_keyword [join [list "*" " " $port_name " " "*"] ""]] ```
+- now for each of these lines latency values are separated and appended to a object called delay_value.
+- arrival time (at) $port_name $delay_value is then written into the timing file.
+Note: for grepping all wildcards --> we compared it with * $port_name * since its given that way in the file content
+
+![Screenshot from 2023-06-20 21-02-53](https://github.com/Visruat/VSD-TCL/assets/125136551/d8c2d16e-27e1-4433-8b8e-d274ee419126)
+
+script written based off the above image 
+
+![Screenshot from 2023-06-20 16-43-52](https://github.com/Visruat/VSD-TCL/assets/125136551/46ce5e7f-7674-4411-93e6-735a50620772)
+
+output of the script.
+
+- similarly the constraints for "set_clock_transition", "set_input_delay", "set_input_transition", "set_output_delay" and "set_load" are written in same fashion
+- after which the timing file is closed.
+- now we need to make sure that all bussed inputs and outputs receive the same constraints on each pin. hence we make use of the following code
+```
+set ot_timing_file [open $sdc_dirname/$sdc_filename.timing w]
+set timing_file [open /tmp/3 r]
+while {[gets $timing_file line] != -1} {
+        if {[regexp -all -- {\*} $line]} {
+                set bussed [lindex [lindex [split $line "*"] 0] 1]
+                set final_synth_netlist [open $sdc_dirname/$sdc_filename.final.synth.v r]
+                while {[gets $final_synth_netlist line2] != -1 } {
+                        if {[regexp -all -- $bussed $line2] && [regexp -all -- {input} $line2] && ![string match "" $line]} {
+                        puts -nonewline $ot_timing_file "\n[lindex [lindex [split $line "*"] 0 ] 0 ] [lindex [lindex [split $line2 ";"] 0 ] 1 ] [lindex [split $line "*"] 1 ]"
+                        } elseif {[regexp -all -- $bussed $line2] && [regexp -all -- {output} $line2] && ![string match "" $line]} {
+                        puts -nonewline $ot_timing_file "\n[lindex [lindex [split $line "*"] 0 ] 0 ] [lindex [lindex [split $line2 ";"] 0 ] 1 ] [lindex [split $line "*"] 1 ]"
+                        }
+                }
+        } else {
+        puts -nonewline $ot_timing_file  "\n$line"
+        }
+}
+
+close $timing_file
+puts "set_timing_fpath $sdc_dirname/$sdc_filename.timing"
+}
+```
+- we open final timing file in write mode
+- we now open the temp timing file in read mode , to grep the bussed ports
+- we setup a file which is linked to the synthesis netlist. from this file grep all the nets which are bussed and enter them in the required format such that all ports of the bus has been constrained.
+- incase we find a non bussed lines while going through the netlist we write them as it is in the netlist to the final timing file.
+
+![Screenshot from 2023-06-20 22-07-52](https://github.com/Visruat/VSD-TCL/assets/125136551/8a0a9357-3b01-41f0-8845-e2e5f7f69da9)
+
+now we have reached the end of the read_sdc. proc
+Now all the procs need to be sourcd so that they can be called in the main file.
+
+```
+puts "\nInfo: Timing Analysis Started ... "
+puts "\nInfo: initializing number of threads, libraries, sdc, verilog netlist path..."
+source /home/vsduser/vsdsynth/procs/reopenStdout.proc
+source /home/vsduser/vsdsynth/procs/set_num_threads.proc
+reopenStdout $OutputDirectory/$DesignName.conf
+set_multi_cpu_usage -localCpu 8
+
+source /home/vsduser/vsdsynth/procs/read_lib.proc
+read_lib -early /home/vsduser/vsdsynth/osu018_stdcells.lib
+
+read_lib -late /home/vsduser/vsdsynth/osu018_stdcells.lib
+
+source /home/vsduser/vsdsynth/procs/read_verilog.proc
+read_verilog $OutputDirectory/$DesignName.final.synth.v
+
+source /home/vsduser/vsdsynth/procs/read_sdc.proc
+read_sdc $OutputDirectory/$DesignName.sdc
+reopenStdout /dev/tty
+```
+
+__Creating the spef file and config file__
+
+```
+if {$enable_prelayout_timing == 1} {
+	puts "\nInfo: enable prelayout_timing is $enable_prelayout_timing. Enabling zero-wire load parasitics"
+	set spef_file [open $OutputDirectory/$DesignName.spef w]
+	puts $spef_file "*SPEF \"IEEE 1481-1998\""
+	puts $spef_file "*DESIGN \"$DesignName\""
+	puts $spef_file "*DATE \"Sun Jun 11 11:59:00 2023\""
+	puts $spef_file "*VENDOR \"VLSI System Design\""
+	puts $spef_file "*PROGRAM \"TCL Workshop\""
+	puts $spef_file "*DATE \"0.0\""
+	puts $spef_file "*DESIGN FLOW \"NETLIST_TYPE_VERILOG\""
+	puts $spef_file "*DIVIDER /"
+	puts $spef_file "*DELIMITER : "
+	puts $spef_file "*BUS_DELIMITER [ ]"
+	puts $spef_file "*T_UNIT 1 PS"
+	puts $spef_file "*C_UNIT 1 FF"
+	puts $spef_file "*R_UNIT 1 KOHM"
+	puts $spef_file "*L_UNIT 1 UH"
+}
+close $spef_file
+
+set conf_file [open $OutputDirectory/$DesignName.conf a]
+puts $conf_file "set_spef_fpath $OutputDirectory/$DesignName.spef"
+puts $conf_file "init_timer"
+puts $conf_file "report_timer"
+puts $conf_file "report_wns"
+puts $conf_file "report_tns"
+puts $conf_file "report_worst_paths -numPaths 10000 " 
+close $conf_file
+```
+### Quaity of Results (QoR)
+
+we have reached the final phase of the Tcl box which involves output generation as a datasheet
+
+running sta analysis
+
+```
+set tcl_precision 3
+set time_elapsed_in_us [time {exec /home/vsduser/OpenTimer-1.0.5/bin/OpenTimer < $OutputDirectory/$DesignName.conf >& $OutputDirectory/$DesignName.results} 1]
+puts "time_elapsed_in_us is $time_elapsed_in_us"
+set time_elapsed_in_sec "[expr {[lindex $time_elapsed_in_us 0]/100000}]sec"
+#puts "time_elapsed_in_sec is $time_elapsed_in_sec"
+puts "\nInfo: STA finished in $time_elapsed_in_sec seconds"
+```
+- logs and results are saved in the file $DesignName.results
+- encountered an error where a string variable was being assigned either a null value or was bveing initialised incorrectly. It was rectified when the sdc file, __final.synth.v file__ ( string issue was from this file) and conf file was checked for errors.
+
+Now we take the outputs of STA analysis from the .results file 
+```
+#-------------------------find worst output violation--------------------------------#
+set worst_RAT_slack "-"
+set report_file [open $OutputDirectory/$DesignName.results r]
+set pattern {RAT}
+while {[gets $report_file line] != -1} {
+	if {[regexp $pattern $line]} {
+		set worst_RAT_slack "[expr {[lindex $line 3]/1000}]ns"
+		break
+	} else {
+		continue
+	}
+}
+close $report_file
+
+#-------------------------find number of output violations--------------------------------#	
+set report_file [open $OutputDirectory/$DesignName.results r]
+set count 0
+while {[gets $report_file line] != -1} {
+	incr count [regexp -all -- $pattern $line]
+}
+set Number_output_violations $count
+close $report_file
+
+#-------------------------find worst setup violation--------------------------------#
+set worst_negative_setup_slack "-"
+set report_file [open $OutputDirectory/$DesignName.results r] 
+set pattern {Setup}
+while {[gets $report_file line] != -1} {
+	if {[regexp $pattern $line]} {
+		set worst_negative_setup_slack "[expr {[lindex $line 3]/1000}]ns"
+		break
+	} else {
+		continue
+	}
+}
+close $report_file
+
+#-------------------------find number of setup violations--------------------------------#
+set report_file [open $OutputDirectory/$DesignName.results r]
+set count 0
+while {[gets $report_file line] != -1} {
+	incr count [regexp -all -- $pattern $line]
+}
+set Number_of_setup_violations $count
+close $report_file
+
+#-------------------------find worst hold violation--------------------------------#
+set worst_negative_hold_slack "-"
+set report_file [open $OutputDirectory/$DesignName.results r] 
+set pattern {Hold}
+while {[gets $report_file line] != -1} {
+	if {[regexp $pattern $line]} {
+		set worst_negative_hold_slack "[expr {[lindex $line 3]/1000}]ns"
+		break
+	} else {
+		continue
+	}
+}
+close $report_file
+
+#-------------------------find number of hold violations--------------------------------#
+set report_file [open $OutputDirectory/$DesignName.results r]
+set count 0
+while {[gets $report_file line] != -1} {
+	incr count [regexp -all -- $pattern $line]
+}
+set Number_of_hold_violations $count
+close $report_file
+
+#-------------------------find number of instances--------------------------------#
+
+set pattern {Num of gates}
+set report_file [open $OutputDirectory/$DesignName.results r] 
+while {[gets $report_file line] != -1} {
+	if {[regexp $pattern $line]} {
+		set Instance_count "[lindex [join $line " "] 4 ]"
+		break
+	} else {
+		continue
+	}
+}
+close $report_file
+```
+
+once all the output data is taken from .results file, we shall format it into a datasheet and display in the termianl window
+
+![Screenshot from 2023-06-20 22-34-22](https://github.com/Visruat/VSD-TCL/assets/125136551/5291baed-63f5-4447-bfd7-6719234317c2)
+
+
+```
+puts "\n"
+puts "						****PRELAYOUT TIMING RESULTS**** 					"
+set formatStr "%15s %15s %15s %15s %15s %15s %15s %15s %15s"
+
+puts [format $formatStr "----------" "-------" "--------------" "---------" "---------" "--------" "--------" "-------" "-------"]
+puts [format $formatStr "DesignName" "Runtime" "Instance Count" "WNS Setup" "FEP Setup" "WNS Hold" "FEP Hold" "WNS RAT" "FEP RAT"]
+puts [format $formatStr "----------" "-------" "--------------" "---------" "---------" "--------" "--------" "-------" "-------"]
+foreach design_name $DesignName runtime $time_elapsed_in_sec instance_count $Instance_count wns_setup $worst_negative_setup_slack fep_setup $Number_of_setup_violations wns_hold $worst_negative_hold_slack fep_hold $Number_of_hold_violations wns_rat $worst_RAT_slack fep_rat $Number_output_violations {
+	puts [format $formatStr $design_name $runtime $instance_count $wns_setup $fep_setup $wns_hold $fep_hold $wns_rat $fep_rat]
+}
+
+puts [format $formatStr "----------" "-------" "--------------" "---------" "---------" "--------" "--------" "-------" "-------"]
+puts "\n"
+```
+- formatStr --> %15s represents a string identifier. When a string is called in $formatStr it will be automatically respaced because of the identifier in the object
+- using foreach loop to enter the outputs in formatStr and generate the datasheet
+
+### Final Output of Tcl Box
+![Screenshot from 2023-06-20 22-30-54](https://github.com/Visruat/VSD-TCL/assets/125136551/02985d9b-d320-4765-8a3c-e04387c4c50b)
+
+## Conclusion
+- Completed all task for Tcl workshop.
+- all encountered errors during simulation were rectified.
+- final output has a mismatch as compared to wrokshop   --> timing file had some warnings which might have affected the sta analysis
+  							--> try synth.v file as while cleaning the file to use for sta might have removed few ports
+
+## Acknowledgements
+
+
