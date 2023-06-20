@@ -226,9 +226,26 @@ proc read_verilog arg1 {
 
 5) read_sdc.proc
 
+The read_sdc proc is a large proc file which will be covered in parts.
+This is done to convert sdc file into OpenTimer format
+```
+proc read_sdc {arg1} {
+set sdc_dirname [file dirname $arg1]
+#"file tail" is used to get the last file of the arguement given
+set sdc_filename [lindex [split [file tail $arg1] .] 0 ]
+#set sdc_filename [lindex [split [lindex [split $arg1 /] [expr {[llength [split $arg1 /]] -1}]] .] 0]
+set sdc [open $arg1 r]
+set tmp_file [open ./temp/4 "w"] 
+puts -nonewline $tmp_file [string map {"\[" "" "\]" " "} [read $sdc]]     
+close $tmp_file
+}
+```
 
+- setting directory and filename for sdc , also replacing the " [] " with "" in a temp file
+- special mapping done so that it can diffrentiate between "abc" and "abc_en". Refer the block of code.
 
+![Screenshot from 2023-06-20 13-34-44](https://github.com/Visruat/VSD-TCL/assets/125136551/f66d1bb6-7a73-43e1-a811-dbfada4f5f8b)
 
-
+- converting create_clock constraints
 
 
