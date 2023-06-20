@@ -247,5 +247,27 @@ close $tmp_file
 ![Screenshot from 2023-06-20 13-34-44](https://github.com/Visruat/VSD-TCL/assets/125136551/f66d1bb6-7a73-43e1-a811-dbfada4f5f8b)
 
 - converting create_clock constraints
+```
+set tmp_file [open /tmp/4 r]
+set timing_file [open /tmp/3 w]
+set lines [split [read $tmp_file] "\n"]
+set find_clocks [lsearch -all -inline $lines "create_clock*"]
+foreach elem $find_clocks {
+	set clock_port_name [lindex $elem [expr {[lsearch $elem "get_ports"]+1}]]
+	set clock_period [lindex $elem [expr {[lsearch $elem "-period"]+1}]]
+	set duty_cycle [expr { 100 - [expr {[lindex [lindex $elem [expr {[lsearch $elem "-waveform"]+1}]] 1]*100/$clock_period}]}]
+	puts $timing_file "clock $clock_port_name $clock_period $duty_cycle"
+	}
+close $tmp_file
+```
 
+- set the tmp_file obtained the start of the proc to read mode so that you can read data from it.
+- create another tmp_file to write the create_clock constraints
+- the lines are split based off "\n" being the delimiter --> $lines
+- the ports which contain "create_clock" are sorted out using lsearch -inline  --> find_clocks
+- in a foreach loop elem --> clock_port_name is set by taking lindex +1 of "get_ports"
+- --> clock_period is identified by doing the same for "-period"
+- --> duty_cycle is found by implemeting this logic into tcl script = [ Ton/Tperiod * 100 ] where Ton is taken {x y} after "-waveform"
+- dump the puts statement if $timing_file
 
+- creating 
