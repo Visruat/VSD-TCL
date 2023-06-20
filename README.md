@@ -1,5 +1,9 @@
 # Comprehensive TCL Workshop: From Introduction to Advanced Scripting Techniques in Design and Synthesis
 --------------------------------------------------------------------------------------------------------
+_Author: T R Visruat_
+
+_Acknowledgements: TCL Workshop by [Mr. Kunal Ghosh](https://github.com/kunalg123) , [VLSI System Design](https://www.vlsisystemdesign.com/)_
+
 ## Introduction
 Tool Command Language (Tcl) is a scripting language commonly used in various domains, including software development, system administration, and electronic design automation (EDA). Tcl is known for its simplicity, flexibility, and ease of integration with other programming languages and tools. Tcl scripting involves writing scripts in the Tcl language to automate tasks, execute commands, and manipulate data.
 
@@ -537,6 +541,6 @@ puts "\n"
 - final output has a mismatch as compared to wrokshop   --> timing file had some warnings which might have affected the sta analysis
   							--> try synth.v file as while cleaning the file to use for sta might have removed few ports
 
-## Acknowledgements
+__Happy Learning, Pandabro out!__ 
 
 
