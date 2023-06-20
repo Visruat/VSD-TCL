@@ -182,11 +182,49 @@ proc set_multi_cpu_usage {args} {
         
 ![Screenshot from 2023-06-20 09-11-01](https://github.com/Visruat/VSD-TCL/assets/125136551/f2f8125c-843b-4dfa-9d23-8455a51778f8)
 
+3) read_lib.proc
 
+```
+proc read_lib args {
+	array set options {-late <late_lib_path> -early <early_lib_path> -help ""}
+	while {[llength $args]} {
+		switch -glob -- [lindex $args 0] {
+		-late {
+			set args [lassign $args - options(-late) ]
+			puts "set_late_celllib_fpath $options(-late)"
+		      }
+		-early {
+			set args [lassign $args - options(-early) ]
+			puts "set_early_celllib_fpath $options(-early)"
+		       }
+		-help {
+			set args [lassign $args - options(-help) ]
+			puts "Usage: read_lib -late <late_lib_path> -early <early_lib_path>"
+			puts "-late <provide late library path>"
+			puts "-early <provide early library path>"
+		      }	
+		default break
+		}
+	}
+}
+```
+- Similar to the set_num_threads proc , the read_lib proc will have 3 options i.e _late early and help_
+- the proc ensures to read the late and early lib file for STA and write it in a file
  
+![Screenshot from 2023-06-20 10-24-26](https://github.com/Visruat/VSD-TCL/assets/125136551/27ec0a88-76c1-424e-b339-d540cee09aee)
 
+4) read_verilog.proc
 
+```
+proc read_verilog arg1 {
+  puts "set_verilog_fpath $arg1"
+}
+```
+- This proc enters the puts statement followed by the netlist file
 
+![Screenshot from 2023-06-20 10-28-41](https://github.com/Visruat/VSD-TCL/assets/125136551/74c91812-becf-4aeb-86af-86889b91021d)
+
+5) read_sdc.proc
 
 
 
