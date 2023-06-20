@@ -180,6 +180,7 @@ proc set_multi_cpu_usage {args} {
 - "switch -glob -- [lindex $args 0]" --> globbing is used to get the term inside [] so that switch can map to the corresponding case. Takes only the ket of the key-value pair 
 - "set args [lassign $args - options(-localCpu)]" --> assigning new value to args after removing the array element which was used to enter the loop
         
+![Screenshot from 2023-06-20 09-11-01](https://github.com/Visruat/VSD-TCL/assets/125136551/f2f8125c-843b-4dfa-9d23-8455a51778f8)
 
 
  
