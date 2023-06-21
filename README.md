@@ -533,7 +533,8 @@ puts "\n"
 - using foreach loop to enter the outputs in formatStr and generate the datasheet
 
 ### Final Output of Tcl Box
-![Screenshot from 2023-06-20 22-30-54](https://github.com/Visruat/VSD-TCL/assets/125136551/02985d9b-d320-4765-8a3c-e04387c4c50b)
+![Screenshot from 2023-06-21 10-25-59](https://github.com/Visruat/VSD-TCL/assets/125136551/599954b8-7350-46fb-aa4c-44ec9b8bfb01)
+
 
 ## Conclusion
 - Completed all task for Tcl workshop.
